@@ -3,22 +3,15 @@ package com.kabouzeid.gramophone;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 
-import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.mockActivities.MockSongTagEditorActivity;
-import com.kabouzeid.gramophone.ui.activities.tageditor.AbsTagEditorActivity;
-import com.kabouzeid.gramophone.ui.activities.tageditor.SongTagEditorActivity;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -29,10 +22,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +70,8 @@ public class SongTagEditorActivityTest {
         activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
             activity.save();
         });
-        activityScenario.recreate();
+        activityScenario.close();
+        activityScenario = ActivityScenario.launch(tagEditorIntent);
         activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
             Assert.assertEquals("test song title", activity.getSongTitle());
             Assert.assertEquals("test album title", activity.getAlbumTitle());
