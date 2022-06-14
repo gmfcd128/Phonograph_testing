@@ -84,5 +84,61 @@ public class SongTagEditorActivityTest {
 
     }
 
+    @Test
+    public void testSaveSpecialCharacter() {
+        Intent tagEditorIntent = new Intent(ApplicationProvider.getApplicationContext(), MockSongTagEditorActivity.class);
+        tagEditorIntent.putExtra("test_song_path", songPaths.get(0));
+        activityScenario = ActivityScenario.launch(tagEditorIntent);
+        Espresso.onView(withId(R.id.title1)).perform(replaceText("♿♻☢"));
+        Espresso.onView(withId(R.id.title2)).perform(replaceText("⚡⚠☣"));
+        Espresso.onView(withId(R.id.artist)).perform(replaceText("⚓☸✂"));
+        Espresso.onView(withId(R.id.genre)).perform(replaceText("✄☤☪"));
+        Espresso.onView(withId(R.id.year)).perform(replaceText("☯☮☥"));
+        Espresso.onView(withId(R.id.image_text)).perform(replaceText("❂☕❦"));
+        Espresso.onView(withId(R.id.lyrics)).perform(replaceText("☘❁❀"));
+        activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
+            activity.save();
+        });
+        activityScenario.close();
+        activityScenario = ActivityScenario.launch(tagEditorIntent);
+        activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
+            Assert.assertEquals("♿♻☢", activity.getSongTitle());
+            Assert.assertEquals("⚡⚠☣", activity.getAlbumTitle());
+            Assert.assertEquals("⚓☸✂", activity.getArtistName());
+            Assert.assertEquals("✄☤☪", activity.getGenreName());
+            Assert.assertEquals("☯☮☥", activity.getSongYear());
+            Assert.assertEquals("❂☕❦", activity.getTrackNumber());
+            Assert.assertEquals("☘❁❀", activity.getLyrics());
+        });
+    }
+
+    @Test
+    public void testSaveEmptyValue() {
+        Intent tagEditorIntent = new Intent(ApplicationProvider.getApplicationContext(), MockSongTagEditorActivity.class);
+        tagEditorIntent.putExtra("test_song_path", songPaths.get(0));
+        activityScenario = ActivityScenario.launch(tagEditorIntent);
+        Espresso.onView(withId(R.id.title1)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.title2)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.artist)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.genre)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.year)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.image_text)).perform(replaceText(""));
+        Espresso.onView(withId(R.id.lyrics)).perform(replaceText(""));
+        activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
+            activity.save();
+        });
+        activityScenario.close();
+        activityScenario = ActivityScenario.launch(tagEditorIntent);
+        activityScenario.onActivity((ActivityScenario.ActivityAction<MockSongTagEditorActivity>) activity -> {
+            Assert.assertEquals("", activity.getSongTitle());
+            Assert.assertEquals("", activity.getAlbumTitle());
+            Assert.assertEquals("", activity.getArtistName());
+            Assert.assertEquals("", activity.getGenreName());
+            Assert.assertEquals("", activity.getSongYear());
+            Assert.assertEquals("", activity.getTrackNumber());
+            Assert.assertEquals("", activity.getLyrics());
+        });
+    }
+
 
 }
